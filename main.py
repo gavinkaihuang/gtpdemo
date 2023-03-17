@@ -32,6 +32,7 @@ def chat_api():
     )
     print(response)
 
+
 if __name__ == '__main__':
 
     config = ConfigParser()
@@ -43,7 +44,7 @@ if __name__ == '__main__':
     openai.api_key = open_api_key
 
     #mathod 1
-    get_model_lists()
+    # get_model_lists()
 
     #mathod 2  收费接口
     # ask_common_info()
