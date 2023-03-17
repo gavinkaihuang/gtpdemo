@@ -1,12 +1,39 @@
 import os
 import openai
 from configparser import ConfigParser
+from language_convert import convert_to_chinese
+
+def use_key_for_free():
+    # config = ConfigParser()
+    # config.read('config.cfg', encoding='UTF-8')
+    org = config['free_keys']['ORG']
+    open_api_key = config['free_keys']['OPEN_API_KEY']
+    # print(open_api_key)
+    openai.organization = org
+    openai.api_key = open_api_key
+    print("use free account: " + openai.organization)
+
+def use_key_for_payment():
+    org = config['payment_keys']['ORG']
+    open_api_key = config['payment_keys']['OPEN_API_KEY']
+    # print(open_api_key)
+    openai.organization = org
+    openai.api_key = open_api_key
+    print("use payment account: " + openai.organization)
+
+def set_key(key):
+    if (key == 1):
+        use_key_for_payment()
+    else:
+        use_key_for_free()
 
 
 def get_model_lists():
+    set_key(0)
     print(openai.Model.list())
 
 def ask_common_info():
+    set_key(1)
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo", 
         messages=[
@@ -14,9 +41,12 @@ def ask_common_info():
         {"role": "user", "content": "帮我写一首七言绝句"}],
         max_tokens=4000
     )
-    print(completion)
+    # completion = r'\u5cf0\u5934\u3002\n\u6c14\u606f\u60a0\u957f\u6101\u610f\u5c11\uff0c\u601d\u7ef4\u7eb7\u7e41\u68a6\u4e2d\u6e38\u3002'
+    print(convert_to_chinese(completion))
 
 def chat_api():
+
+    set_key(0)
     start_sequence = "\nAI:"
     restart_sequence = "\nHuman: "
 
@@ -33,27 +63,19 @@ def chat_api():
     print(response)
 
 
-if __name__ == '__main__':
+    
 
+
+if __name__ == '__main__':
     config = ConfigParser()
     config.read('config.cfg', encoding='UTF-8')
-    org = config['keys']['ORG']
-    open_api_key = config['keys']['OPEN_API_KEY']
-    print(open_api_key)
-    openai.organization = org
-    openai.api_key = open_api_key
 
     #mathod 1
     # get_model_lists()
 
     #mathod 2  收费接口
-    # ask_common_info()
+    ask_common_info()
 
     #mathod 3 收费接口
     # chat_api()
 
-
-    # openai.organization = "org-1etO7fMkXVo2glkZ9rrN6lsA"
-    # openai.api_key = os.getenv("OPENAI_API_KEY")
-    # # print(openai.api_key)
-    # print(openai.Model.list())
